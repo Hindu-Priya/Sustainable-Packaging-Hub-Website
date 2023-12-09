@@ -64,17 +64,17 @@ app.get('/prodDetails/:productName', (req, res) => {
 
 
 // // API endpoint to get supplier data
-// app.get('/supplier', (req, res) => {
-//   const query = 'SELECT * FROM Suppliers';
-//   db.query(query, (err, result) => {
-//     if (err) {
-//       console.error('Error executing query:', err);
-//       res.status(500).send('Internal Server Error');
-//     } else {
-//       res.json(result);
-//     }
-//   });
-// });
+app.get('/selectedItems', (req, res) => {
+  const query = 'SELECT * FROM CartDetails';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.json(result);
+    }
+  });
+});
 
 // app.put('/equipment/:id', (req, res) => {
 //   const equipmentId = req.params.id;
