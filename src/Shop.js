@@ -28,8 +28,11 @@ const Shop = () => {
   const [cartItems, setCartItems] = useState([]);
 
   useEffect(() => {
+    if(productName === ""){
+      return;
+    }
     const fetchData = async () => {
-      if(productName !== ""){
+      
         try {
           const response = await fetch(`http://localhost:8000/prodDetails/${productName}`);
     
@@ -46,7 +49,6 @@ const Shop = () => {
         } catch (error) {
           console.error('Error fetching data:', error);
         }
-      };
     
       fetchData();
 
@@ -79,6 +81,9 @@ const Shop = () => {
   
 
   useEffect(() => {
+    if(updateAvailabileQuantity === false)
+        return;
+
     const updateItemAvailability = async () => {
       try {
 
@@ -116,6 +121,8 @@ const Shop = () => {
   }, [updateAvailabileQuantity]); 
 
   useEffect(() => {
+    if(transaction === false) return;
+
     const updateTransaction = async () => {
       console.log('updatettransaction', productDetails[0]);
       let price = productDetails[0].Price;
@@ -155,6 +162,7 @@ const Shop = () => {
     updateTransaction();
   }, [transaction]);
 
+
   const handleCheckOut = () => {
     setShowCart(false);
     setUpdateAvailabileQuantity(true);
@@ -166,7 +174,6 @@ const Shop = () => {
     // Add the selected card to the cart
     // alert(`${selectedCard.description} added to cart`);
     setUpdateAvailabileQuantity(false);
-    setTransaction(false);
 
     setProductName(selectedCard.description);
     setShowDialogCart(true);
