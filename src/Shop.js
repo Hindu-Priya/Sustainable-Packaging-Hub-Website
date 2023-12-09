@@ -24,39 +24,43 @@ const Shop = () => {
   const [quantity, setQuantity] = useState(0);
   const [transaction, setTransaction] = useState(false);
   // const [showOrder , setShowOrder] = useState(false);
-  const [updateAvailabileQuantity, setUpdateAvailabileQuantity] = useState(false);
+  const [updateAvailableQuantity, setUpdateAvailableQuantity] = useState(false);
   const [cartItems, setCartItems] = useState([]);
+  const [emptyCart, setEmptyCart] = useState(false);
 
   useEffect(() => {
-    if(productName === ""){
+    console.log("productName:", productName);
+
+    if (productName === '') {
       return;
     }
     const fetchData = async () => {
-      
-        try {
-          const response = await fetch(`http://localhost:8000/prodDetails/${productName}`);
-    
-          if (!response.ok) {
-            throw new Error('Network response was not ok');
-          }
-    
-          const result = await response.json();
-    
-          setProductDetails(result);
-          console.log(productDetails);
-          setShowDialogCart(true);
-    
-        } catch (error) {
-          console.error('Error fetching data:', error);
+      try {
+        const response = await fetch(`http://localhost:8000/prodDetails/${productName}`);
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
-    
-      fetchData();
+  
+        const result = await response.json();
+  
+        setProductDetails(result);
 
+        console.log(productDetails);
+        setShowDialogCart(true);
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-     
+    };
+    fetchData();
   }, [productName]);
 
+
+
   useEffect(() => {
+    if(showCart === false) return;
+
     const fetchData = async () => {
       try {
         const response = await fetch(`http://localhost:8000/selectedItems/`);
@@ -68,6 +72,7 @@ const Shop = () => {
         const result = await response.json();
   
         setCartItems(result);
+        setEmptyCart(false);
         console.log(cartItems);
         // setShowDialogCart(true);
   
@@ -78,47 +83,78 @@ const Shop = () => {
   
     fetchData();
   }, [showCart]);
-  
 
   useEffect(() => {
-    if(updateAvailabileQuantity === false)
-        return;
+    if(emptyCart == false) return;
 
-    const updateItemAvailability = async () => {
+    const fetchData = async () => {
       try {
-
-        const response = await fetch('http://localhost:8000/updateAvailability', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productName,
-            quantity,
-          }),
-        });
-
+        const response = await fetch(`http://localhost:8000/resetCart/`);
+  
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-       
+  
         const result = await response.json();
+  
+        setCartItems([]);
+        console.log(cartItems);
+        // setShowDialogCart(true);
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, [emptyCart]);
+  
 
-        if (result.success) {
-          // Update succeeded
-          console.log('Equipment availability updated successfully.');
-        } else {
-          // Update failed
-          console.error('Equipment not available or out of stock.');
-        }
+  
+
+  useEffect(() => {
+    if( updateAvailableQuantity === false)
+      return;
+    const updateItemAvailability = async () => {
+      try {
+        const updatePromises = cartItems.map(async (item) => {
+          const { Name: product, Quantity: qty } = item;
+  
+          const response = await fetch('http://localhost:8000/updateAvailability', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              product,
+              qty,
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+  
+          const result = await response.json();
+  
+          if (result.success) {
+            console.log(`Availability for ${product} updated successfully.`);
+          } else {
+            console.error(`Item ${product} not available or out of stock.`);
+          }
+        });
+  
+        // Wait for all update promises to complete
+        await Promise.all(updatePromises);
       } catch (error) {
         console.error('Error updating availability:', error);
       }
     };
-
+    setUpdateAvailableQuantity(false);
     // Call the function when the component mounts
     updateItemAvailability();
-  }, [updateAvailabileQuantity]); 
+  }, [updateAvailableQuantity]);
+  
 
   useEffect(() => {
     if(transaction === false) return;
@@ -141,7 +177,7 @@ const Shop = () => {
           }),
         });
 
-        // setTransaction(false);
+        setTransaction(false);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -165,25 +201,34 @@ const Shop = () => {
 
   const handleCheckOut = () => {
     setShowCart(false);
-    setUpdateAvailabileQuantity(true);
+    setUpdateAvailableQuantity(true);
+    setEmptyCart(true);
+
   }
 
   
 
   const handleCardClick = (selectedCard) => {
     // Add the selected card to the cart
-    // alert(`${selectedCard.description} added to cart`);
-    setUpdateAvailabileQuantity(false);
+    
 
     setProductName(selectedCard.description);
-    setShowDialogCart(true);
    
     // setCart((prevCart) => [...prevCart, selectedCard]);
   };
 
   const handleAddingToCart = () => {
-    setShowDialogCart(false);
-    setTransaction(true);
+
+    if(productDetails[0].Quantity < quantity){
+      alert(` ${productName}, mentioned quantity is not available. Sorry for the inconvenience!   `);
+      setShowDialogCart(false);
+    }else {
+      setShowDialogCart(false);
+      // alert(`${productName} added to cart`);
+      setTransaction(true);
+    }
+    
+    
   }
 
   const cardsData = [

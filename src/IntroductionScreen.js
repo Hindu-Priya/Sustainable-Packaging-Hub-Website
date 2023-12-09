@@ -13,7 +13,7 @@ export default function IntroductionScreen() {
     return (
       <div style={{textAlign: "center", justifyContent : "center"}}> 
       <div>
-        <h1 style={{color: "white", textAlign : "center"} }>Sustainable Packaginng Hub</h1>
+        <h1 style={{color: "white", textAlign : "center"} }>Sustainable Packaging Hub</h1>
         <p id="notes-paragraph">
           Choose sustainable products to make a positive impact on the environment and society. 
           <br/>

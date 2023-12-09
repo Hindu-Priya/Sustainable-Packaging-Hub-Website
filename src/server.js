@@ -76,6 +76,18 @@ app.get('/selectedItems', (req, res) => {
   });
 });
 
+app.get('/resetCart', (req, res) => {
+  const query = 'Truncate CartDetails';
+  db.query(query, (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      res.json(result);
+    }
+  });
+});
+
 // app.put('/equipment/:id', (req, res) => {
 //   const equipmentId = req.params.id;
 //   const updatedData = req.body;
@@ -98,16 +110,16 @@ app.get('/selectedItems', (req, res) => {
 
 
 app.post('/updateAvailability', (req, res) => {
-  const {productName, quantity} = req.body;
+  const {product, qty} = req.body;
 
-  const count = parseInt(quantity, 10);
+  const count = parseInt(qty, 10);
 
   // Using a parameterized query to update quantity_in_store
   const updateQuery =
-    'UPDATE CartDetails SET Quantity = Quantity - ? WHERE Name = ? AND Quantity > 0';
+    'UPDATE Products SET Quantity = Quantity - ? WHERE Name = ? AND Quantity > 0';
 
   // Executing the query with equipmentData.name as a parameter
-  db.query(updateQuery, [count, productName], (updateErr, updateResult) => {
+  db.query(updateQuery, [count, product], (updateErr, updateResult) => {
     if (updateErr) {
       // Handling errors during the query execution
       console.error('Error updating availability:', updateErr);
