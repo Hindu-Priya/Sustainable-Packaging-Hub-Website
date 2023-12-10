@@ -346,6 +346,10 @@ const Shop = () => {
     }
   ];
 
+  let value = 0;
+
+  if(showCart){cartItems.map((item, index) => (value = value + item.TotalPrice))}
+
   const modalStyle = {
     position: 'fixed',
     top: '50%',
@@ -364,6 +368,7 @@ const Shop = () => {
        <>
           
      <div style={{ textAlign: "center" }}>
+
   <div style={{ justifyContent: "center", textAlign: "center" }}>
     <h2 style={{ color: "white" }}>Shopping Cart</h2>
     <table
@@ -391,9 +396,11 @@ const Shop = () => {
             <td style={{ padding: "10px", borderBottom: "1px solid white" }}>{item.Price}</td>
             <td style={{ padding: "10px", borderBottom: "1px solid white" }}>{item.TotalPrice}</td>
           </tr>
+         
         ))}
       </tbody>
     </table>
+    <h3 style={{ color: "white" }}> Total Price to be paid : {value} </h3>
   </div>
   <button
     style={{
