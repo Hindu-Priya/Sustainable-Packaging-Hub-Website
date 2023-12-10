@@ -3,6 +3,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
 import Card from './Card';
 import image1 from "./resources/9.jpeg";
 import image2 from './resources/5.jpeg';
@@ -15,6 +16,7 @@ import image8 from './resources/3.jpeg';
 
 
 const Shop = () => {
+  const { userName } = useParams();
 
   // const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
@@ -27,6 +29,30 @@ const Shop = () => {
   const [updateAvailableQuantity, setUpdateAvailableQuantity] = useState(false);
   const [cartItems, setCartItems] = useState([]);
   const [emptyCart, setEmptyCart] = useState(false);
+  const [userDetails, setUserDetails] = useState([]);
+  const [updateTransactionTable, setUpdateTransactionTable] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/user/${userName}`);
+  
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+  
+        const result = await response.json();
+
+  
+        setUserDetails(result);
+        console.log("userdetails", userDetails[0]);
+  
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     console.log("productName:", productName);
@@ -55,6 +81,8 @@ const Shop = () => {
     };
     fetchData();
   }, [productName]);
+
+
 
 
 
@@ -198,11 +226,63 @@ const Shop = () => {
     updateTransaction();
   }, [transaction]);
 
+  useEffect(() => {
+    if(updateTransactionTable === false) return;
+      
+    const updateTable = async () => {
+      let FN = userDetails[0].FirstName;
+      let LN = userDetails[0].LastName
+      try {
+        const updatePromises = cartItems.map(async (item) => {
+          const { Name: product, Quantity: qty, Price : cost, TotalPrice : tp } = item;
+  
+          const response = await fetch('http://localhost:8000/updateDB', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              FN,
+              LN,
+              product,
+              qty,
+              cost,
+              tp
+            }),
+          });
+  
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+  
+          const result = await response.json();
+  
+          if (result.success) {
+            console.log(`Availability for ${product} updated successfully.`);
+          } else {
+            console.error(`Item ${product} not available or out of stock.`);
+          }
+        });
+  
+        // Wait for all update promises to complete
+        await Promise.all(updatePromises);
+      } catch (error) {
+        console.error('Error updating availability:', error);
+      }
+    };
+    setUpdateTransactionTable(false);
+    // Call the function when the component mounts
+    updateTable();
+  }, [updateTransactionTable]);
+  
 
+
+ 
   const handleCheckOut = () => {
     setShowCart(false);
     setUpdateAvailableQuantity(true);
     setEmptyCart(true);
+    setUpdateTransactionTable(true);
 
   }
 
@@ -372,3 +452,6 @@ const Shop = () => {
 };
 
 export default Shop;
+
+
+

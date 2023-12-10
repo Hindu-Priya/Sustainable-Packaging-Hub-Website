@@ -5,6 +5,7 @@ import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import IntroductionScreen from './IntroductionScreen';
 import Shop from './Shop';
+import LoginForm from './LoginForm';
 
 // import CategoriesScreen from './CategoriesScreen';
 
@@ -13,10 +14,9 @@ export default function App() {
     <Router>
       <div>
       <Routes>
-          <Route path="/" element = {<IntroductionScreen/>} />
-          <Route path="/shop" element = {<Shop/>} />
-          {/* <Route path="/categories" component={CategoriesScreen} /> */}
-          {/* Add more routes for other screens */}
+      <Route path="/user/:userName" element={<IntroductionScreen/> }/>
+        < Route path="/" element={<LoginForm />} />
+          <Route path="/shop/:userName" element = {<Shop/>} />
           </Routes>
       </div>
     </Router>

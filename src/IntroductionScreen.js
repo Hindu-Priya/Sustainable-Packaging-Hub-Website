@@ -1,8 +1,12 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useParams, useSearchParams } from 'react-router-dom';
 import './App.css';
 import setImage from "./resources/bg.jpeg";
 export default function IntroductionScreen() {
+  const { userName } = useParams();
+  console.log("user name is ", userName);
+
   const navigate = useNavigate();
   const imgStyle = {
     justifyContent : "center",
@@ -30,7 +34,7 @@ export default function IntroductionScreen() {
       <br/>
       
       <button style = {{padding: '10px 20px', 
-    fontSize: '16px', justifyContent :"center", width : "30%"}}onClick={() => navigate('/shop')}>Explore</button>
+    fontSize: '16px', justifyContent :"center", width : "30%"}}onClick={() => navigate(`/shop/${userName}`)}>Explore</button>
 
       </div>
       </div>
