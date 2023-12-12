@@ -3,6 +3,7 @@
 import React from 'react';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useParams, useSearchParams } from 'react-router-dom';
 import Card from './Card';
 import image1 from "./resources/9.jpeg";
@@ -17,6 +18,7 @@ import image8 from './resources/3.jpeg';
 
 const Shop = () => {
   const { userName } = useParams();
+  const navigate = useNavigate();
 
   // const [cart, setCart] = useState([]);
   const [showCart, setShowCart] = useState(false);
@@ -35,7 +37,7 @@ const Shop = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/user/${userName}`);
+        const response = await fetch(`http://54.162.181.8:8000/user/${userName}`);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -62,7 +64,7 @@ const Shop = () => {
     }
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/prodDetails/${productName}`);
+        const response = await fetch(`http://54.162.181.8:8000/prodDetails/${productName}`);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -91,7 +93,7 @@ const Shop = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/selectedItems/`);
+        const response = await fetch(`http://54.162.181.8:8000/selectedItems/`);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -117,7 +119,7 @@ const Shop = () => {
 
     const fetchData = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/resetCart/`);
+        const response = await fetch(`http://54.162.181.8:8000/resetCart/`);
   
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -148,7 +150,7 @@ const Shop = () => {
         const updatePromises = cartItems.map(async (item) => {
           const { Name: product, Quantity: qty } = item;
   
-          const response = await fetch('http://localhost:8000/updateAvailability', {
+          const response = await fetch('http://54.162.181.8:8000/updateAvailability', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -192,7 +194,7 @@ const Shop = () => {
       let price = productDetails[0].Price;
       let totalPrice = quantity * price;
       try {
-        const response = await fetch('http://localhost:8000/updateTransaction', {
+        const response = await fetch('http://54.162.181.8:8000/updateTransaction', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -236,7 +238,7 @@ const Shop = () => {
         const updatePromises = cartItems.map(async (item) => {
           const { Name: product, Quantity: qty, Price : cost, TotalPrice : tp } = item;
   
-          const response = await fetch('http://localhost:8000/updateDB', {
+          const response = await fetch('http://54.162.181.8:8000/updateDB', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -283,6 +285,7 @@ const Shop = () => {
     setUpdateAvailableQuantity(true);
     setEmptyCart(true);
     setUpdateTransactionTable(true);
+    // navigate('/');
 
   }
 
@@ -290,10 +293,7 @@ const Shop = () => {
 
   const handleCardClick = (selectedCard) => {
     // Add the selected card to the cart
-    
-
     setProductName(selectedCard.description);
-   
     // setCart((prevCart) => [...prevCart, selectedCard]);
   };
 
@@ -307,7 +307,6 @@ const Shop = () => {
       // alert(`${productName} added to cart`);
       setTransaction(true);
     }
-    
     
   }
 

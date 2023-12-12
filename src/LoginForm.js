@@ -15,7 +15,7 @@ const LoginForm = () => {
     <div style={containerStyle}>
       <h2>Login Form</h2>
 
-      {/* Client Login */}
+      {/* User Login */}
       <div style={loginSectionStyle}>
         <label style={labelStyle}>Name:</label>
         <input

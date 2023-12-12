@@ -10,12 +10,11 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Replace with your MySQL connection details
 const db = mysql.createConnection({
-    host: '127.0.0.1',
+    host: '54.162.181.8',
     port: 3306,
     user: 'root',
-    password: 'Learn@2023',
+    password: 'Skadoosh@123',
     database: 'SustainableProducts',
   });
 
@@ -30,7 +29,7 @@ db.connect((err) => {
 });
 
 
-// API endpoint to get medical equipment data
+// API endpoint to get product data
 app.get('/prodDetails/:productName', (req, res) => {
   const { productName } = req.params;
   const query = 'SELECT * FROM Products where Name = ?';
@@ -63,7 +62,7 @@ app.get('/user/:userName', (req, res) => {
 });
 
 
-// // API endpoint to get supplier data
+// // API endpoint to get CartDetails data
 app.get('/selectedItems', (req, res) => {
   const query = 'SELECT * FROM CartDetails';
   db.query(query, (err, result) => {
@@ -88,25 +87,6 @@ app.get('/resetCart', (req, res) => {
   });
 });
 
-// app.put('/equipment/:id', (req, res) => {
-//   const equipmentId = req.params.id;
-//   const updatedData = req.body;
-
-//   const updateQuery = 'UPDATE medicalEquipment SET ? WHERE id = ?';
-
-//   db.query(updateQuery, [updatedData, equipmentId], (updateErr, updateResult) => {
-//     if (updateErr) {
-//       console.error('Error updating equipment details:', updateErr);
-//       res.status(500).json({ success: false, message: 'Internal Server Error' });
-//     } else {
-//       if (updateResult.affectedRows > 0) {
-//         res.json({ success: true, message: 'Equipment details updated successfully.' });
-//       } else {
-//         res.status(400).json({ success: false, message: 'Failed to update equipment details.' });
-//       }
-//     }
-//   });
-// });
 
 
 app.post('/updateAvailability', (req, res) => {
@@ -151,7 +131,7 @@ app.post('/updateDB', (req, res) => {
   VALUES (?, ?, ?, ?,?,?)`;
 
   // Executing the query with equipmentData.name as a parameter
-  db.query(updateQuery, [FN, LN, product, count, price, totalPrice], (updateErr, updateResult) => {
+  db.query(updateQuery, [FN, LN, product, price, count, totalPrice], (updateErr, updateResult) => {
     if (updateErr) {
       // Handling errors during the query execution
       console.error('Error updating availability:', updateErr);
