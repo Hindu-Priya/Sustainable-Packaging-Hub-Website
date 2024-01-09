@@ -3,4 +3,6 @@
 ### Designed server using Express Framework
 ### To maintain Database, MySQL Workbench is used.
 
-![Preview](resources/HubPreview.png)
+![Preview](src/resources/HubPreview.png)
+
+
