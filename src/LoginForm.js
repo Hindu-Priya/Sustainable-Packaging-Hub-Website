@@ -79,7 +79,5 @@ const buttonStyle = {
   margin: '10px auto', // Center the button by setting margin
 };
 
-
-
 export default LoginForm;
 
