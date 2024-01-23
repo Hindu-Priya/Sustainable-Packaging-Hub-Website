@@ -4,5 +4,7 @@
 ### To maintain Database, MySQL Workbench is used.
 
 ![Preview](src/resources/HubPreview.png)
+![Preview](src/resources/Cards.png)
 
 
+ 
